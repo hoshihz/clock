@@ -1,4 +1,4 @@
-(function () {
+function createClock(clock) {
     var out = document.createElement("DIV"); out.id = "out"
     var sec = document.createElement("DIV"); sec.id = "sec"
     var min = document.createElement("DIV"); min.id = "min"
@@ -67,4 +67,4 @@
         out.parentNode.removeChild(out)
         deleteClock = undefined
     }
-})()
+}
