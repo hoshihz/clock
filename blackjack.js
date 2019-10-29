@@ -1,33 +1,32 @@
-var cards = 'A234567890JQK'
-
 function getCard(n) {
   if (n === undefined || n < 1) n = 1
-  let res = ''
+  var cards = 'A234567890JQK'
+  let res = []
   for (let i = 0; i < n; i++) {
     let r = Math.floor(Math.random() * cards.length)
-    if (cards[r] == '0') res += '10' + ' '
-    else res += cards[r] + ' '
+    if (cards[r] == '0')
+      res.push('10')
+    else
+      res.push(cards[r])
   }
-  return res.trim()
+  return res
 }
 
 function toPoint(n) {
-  n = n.split(' ')
+  let noA = n.filter(a => a != 'A')
   let point = 0
-  for (let i of n) {
-    if (isNaN(i)) {
-      if (i == 'A') point += 11
-      else point += 10
-    } else point += Number(i)
+  for (let i of noA) {
+    if (isNaN(i))
+      point += 10
+    else
+      point += Number(i)
   }
 
-  if (point > 21 && n.includes('A')) {}
+  function dealWithA(a) {
+    
+  }(n.filter(a => a == 'A'))
+
   return point 
 }
 
-function checkA() {
-
-}
-
-
-console.log(['2','3','4','5','6','7','8','9','A','J','K','Q','10','A'].filter(a => a=='A'))
+console.log(['2','3','4','5','6','7','8','9','A','J','K','Q','10','A'].filter(a => a!='A'))
