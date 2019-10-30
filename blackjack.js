@@ -1,32 +1,62 @@
-function getCard(n) {
-  if (n === undefined || n < 1) n = 1
-  var cards = 'A234567890JQK'
-  let res = []
-  for (let i = 0; i < n; i++) {
-    let r = Math.floor(Math.random() * cards.length)
-    if (cards[r] == '0')
-      res.push('10')
-    else
-      res.push(cards[r])
-  }
-  return res
-}
-
-function toPoint(n) {
-  let noA = n.filter(a => a != 'A')
-  let point = 0
-  for (let i of noA) {
-    if (isNaN(i))
-      point += 10
-    else
-      point += Number(i)
+class BlackJack {
+  constructor() {
+    this.deck = (() => {
+      let cards = 'A234567890JQK'
+      let deck = []
+      for (let i of cards)
+        for (let suits of Array(4)) {
+          if (i == '0') deck.push('10')
+          else deck.push(i)
+        }
+      return deck
+    })()
+    this.decklen = this.deck.length
+    this.hand = []
+    this.point = 0
+    Object.defineProperty(this, 'deck', {enumerable: false})
   }
 
-  function dealWithA(a) {
-    
-  }(n.filter(a => a == 'A'))
+  getCard(n) {
+    if (n === undefined || n < 1) n = 1
+    let r = Math.floor(Math.random()*3 - 1)
+    this.deck.sort(() => r)
+    for (let i = 0; i < n; i++) {
+      this.hand.push(this.deck.shift())
+    }
+    this.point = this.toPoint()
+    this.decklen -= n
+    return this
+  }
 
-  return point 
+  reset() {
+    this.hand = []
+    return this
+  }
+
+  toPoint() {
+    let noA = this.hand.filter(a => a != 'A')
+    let point = 0
+    for (let i of noA) {
+      if (isNaN(i))
+        point += 10
+      else
+        point += Number(i)
+    }
+
+    (function dealWithA(a, sum, n) {
+      for (let i in a) {
+        if (i+1 >= n) sum += 11
+        else sum += 1
+      }
+      if (n != a && sum > 21)
+        dealWithA(a, point, n+1)
+      else
+        point = sum
+    })(this.hand.filter(a => a == 'A'), point, 0)
+
+    return point 
+  }
 }
 
-console.log(['2','3','4','5','6','7','8','9','A','J','K','Q','10','A'].filter(a => a!='A'))
+var bj = new BlackJack()
+bj.getCard(3)
