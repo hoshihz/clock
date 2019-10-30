@@ -16,10 +16,20 @@ class BlackJack {
     Object.defineProperty(this, 'deck', {enumerable: false})
   }
 
+  init() {
+    return this.getCard(2)
+  }
+
+  hit() {
+    this.getCard(1)
+    if (this.point > 21) { console.log(this); this.reset(); return "bust!" }
+    if (this.point == 21) { console.log(this); this.reset(); return "blackjack!"}
+    return this
+  }
+
   getCard(n) {
     if (n === undefined || n < 1) n = 1
-    let r = Math.floor(Math.random()*3 - 1)
-    this.deck.sort(() => r)
+    this.deck.sort(() => Math.floor(Math.random()*3 - 1))
     for (let i = 0; i < n; i++) {
       this.hand.push(this.deck.shift())
     }
@@ -44,11 +54,12 @@ class BlackJack {
     }
 
     (function dealWithA(a, sum, n) {
-      for (let i in a) {
+      for (let i of a.keys()) {
         if (i+1 >= n) sum += 11
         else sum += 1
+        console.log(i+1, n, sum)
       }
-      if (n != a && sum > 21)
+      if (n != a.length && sum > 21)
         dealWithA(a, point, n+1)
       else
         point = sum
@@ -59,4 +70,10 @@ class BlackJack {
 }
 
 var bj = new BlackJack()
-bj.getCard(3)
+bj.init()
+
+/*
+10, 1 A
+
+
+*/
