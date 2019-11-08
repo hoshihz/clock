@@ -1,12 +1,16 @@
-
 var arr = [
 	//'(1+1)/10',
 	'(1+2/10',
 	'(1+2)(2+4)',
-	'(1+2)(3+4)/10+(4+5(2*(2-4))%10)',
-	'6+16(14+16(3+16(14+16(7+16*6))))'
+	'(1+2)(3+4)/10+(4+5(2*(-2-4))%10)+(-2(4+3))',
+	'6+16(14+16(3+16(14+16(7+16*6))))',
+  '2*-6',
+  '~2e1',
+  '26 xor 1',
+  'word',
+  '52//10'
 ]
-arr.forEach(i => {console.log(`————— ${i}`); math(i)})
+arr.forEach(i => {console.log(`—————— ${i}`, '\n math:', math(i))})
 
 function math(str) {
 	str = str.replace(/\s/g, '').replace(/(?<=\d|\))\(/g, '*(')
@@ -25,10 +29,10 @@ function math(str) {
     str = str.slice(0,i[0]) + calc(exp) + str.slice(i[1]+1)
     index = findBracket(str)
   }
-  var ans = comma(calc(str))
+  var ans = calc(str)
   if (isNaN(ans))
     return 'stop!'
-	return ans
+	return comma(ans)
 
   function findBracket(str) {
     //number of total brackets
