@@ -1,3 +1,4 @@
+
 var arr = [
 	//'(1+1)/10',
 	'(1+2/10',
@@ -8,7 +9,9 @@ var arr = [
   '~2e1',
   '26 xor 1',
   'word',
-  '52//10'
+  '~-21',
+	'50+(20-(-50)*2)/10',
+	'50+(20-(-50)*2)/10-6^2+(-6)^3'
 ]
 arr.forEach(i => {console.log(`—————— ${i}`, '\n math:', math(i))})
 
@@ -26,7 +29,14 @@ function math(str) {
     index.forEach(i => scope = Math.max(scope, i.scope))
     let i = index.find(j => j.scope === scope)
     let exp = str.slice(i[0]+1, i[1])
-    str = str.slice(0,i[0]) + calc(exp) + str.slice(i[1]+1)
+		if (str.charAt(i[1]+1) === '^') {
+			let ans = calc(exp);
+			(/([+-]?\d+\.?\d*(e[+-]\d+)?)/).test(str.slice(i[1]+2))
+			console.log(RegExp.$1)
+			str = str.slice(0,i[0]) + _calc('^', ans, RegExp.$1)
+		}
+		else
+    	str = str.slice(0,i[0]) + calc(exp) + str.slice(i[1]+1)
     index = findBracket(str)
   }
   var ans = calc(str)
@@ -105,7 +115,7 @@ function math(str) {
     ]
     for (let i of op.keys()) {
       if (i === 1) {
-        var reg = new RegExp(/(?<!\d)(\~)(\d+\.?\d*(e[+-]?\d+)?)/)
+        var reg = new RegExp(/(?<!\d)(\~)([+-]?\d+\.?\d*(e[+-]?\d+)?)/)
         while (reg.test(str)) {
           str = str.replace(reg, _calc(RegExp.$1, RegExp.$2))
         }
@@ -114,8 +124,8 @@ function math(str) {
         var reg = '(\\d+\\.?\\d*(e[+-]?\\d+)?)(\\'
           + op[i].join('|\\') +
           ')([+-]?\\d+\\.?\\d*(e[+-]?\\d+)?)'
-        if (i > 1)
-          reg = '(?<!\\d)([+-]?' + reg.slice(1)
+				if (i > 1)
+					reg = '(?<!\\d)([+-]?' + reg.slice(1)
         reg = new RegExp(reg)
         while (reg.test(str)) {
           str = str.replace(reg,
@@ -124,7 +134,9 @@ function math(str) {
       }
     }
     return Number(str)
-    function _calc(op, a, b) {
+  }
+
+	function _calc(op, a, b) {
       a = Number(a)
       b = Number(b)
       switch(op) {
@@ -144,7 +156,6 @@ function math(str) {
         case ('xor'): return a ^ b
       }
     }
-  }
 
   function comma(str) {
     str = String(str).split('.')
