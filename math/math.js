@@ -16,8 +16,10 @@ var arr = [
 arr.forEach(i => {console.log(`—————— ${i}`, '\n math:', math(i))})
 
 function math(str) {
-	str = str.replace(/\s/g, '').replace(/(?<=\d|\))\(/g, '*(')
-  if (/[^0-9,.e()+\-*\/^%><&|~xor]/i.test(str)) {
+	str = str.replace(/\s/g, '').replace(
+		/(?<=\d|\))(\(|sin|cos|tan)/g,
+		'*$1')
+  if (/[^0-9,.e()+\-*\/^%><&|~xorcsinta]/i.test(str)) {
     return 'stop!'
   }
 	var index = findBracket(str)
@@ -32,7 +34,6 @@ function math(str) {
 		if (str.charAt(i[1]+1) === '^') {
 			let ans = calc(exp);
 			(/([+-]?\d+\.?\d*(e[+-]\d+)?)/).test(str.slice(i[1]+2))
-			console.log(RegExp.$1)
 			str = str.slice(0,i[0]) + _calc('^', ans, RegExp.$1)
 		}
 		else
@@ -107,7 +108,7 @@ function math(str) {
     //do exponents
     var op = [
       ['^'],
-      ['~'],
+      ['~','cos', 'sin'],
       ['*', '/', '//', '%'],
       ['+', '-'],
       ['<<', '>>', '>>>'],
@@ -115,7 +116,11 @@ function math(str) {
     ]
     for (let i of op.keys()) {
       if (i === 1) {
-        var reg = new RegExp(/(?<!\d)(\~)([+-]?\d+\.?\d*(e[+-]?\d+)?)/)
+        var reg = new RegExp(
+					'(?<!\\d)(\\'
+					+ op[i].join('|') +
+					')([+-]?\\d+\\.?\\d*(e[+-]?\\d+)?)'
+				)
         while (reg.test(str)) {
           str = str.replace(reg, _calc(RegExp.$1, RegExp.$2))
         }
@@ -154,6 +159,9 @@ function math(str) {
         case ('//'): return Math.floor(a/b)
         case ('>>>'): return a >>> b
         case ('xor'): return a ^ b
+				case ('cos'): return Math.cos(a*Math.PI/180)
+				case ('sin'): return Math.sin(a*Math.PI/180)
+				case ('tan'): return Math.tan(a*Math.PI/180)
       }
     }
 
